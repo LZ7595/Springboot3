@@ -13,7 +13,7 @@ import java.util.Map;
 public class JwtUtil {
     // 使用与JwtTokenUtil相同的密钥
     private static final String SIGN_KEY = "lbxxJwtSecretKey1234567890lbxxJwtSecretKey1234567890"; // 修改为与JwtTokenUtil相同的密钥
-    private static final long EXPIRE = 60000L; //43200000L; // 12小时，单位毫秒
+    private static final long EXPIRE = 43200000L; //; // 12小时，单位毫秒60000L
 
     public static class JwtTokenExpiredException extends RuntimeException {
         public JwtTokenExpiredException(String message) {

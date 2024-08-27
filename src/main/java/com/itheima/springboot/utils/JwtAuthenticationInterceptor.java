@@ -1,6 +1,5 @@
 package com.itheima.springboot.utils;
 
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,32 +14,30 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        // 从请求头中获取token
         String token = request.getHeader("Authorization");
-        if (token != null && token.startsWith("Bearer ")) {
-            // 移除"Bearer "前缀
-            token = token.substring(7);
-
-            try {
-                // 验证token是否有效
-                JwtUtil.validateJwtToken(token);
-                // 如果token有效，则继续执行后续的处理器
-                return true;
-            } catch (JwtUtil.JwtTokenExpiredException e) {
-                // 如果token过期，则返回401
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Token has expired");
-                return false;
-            } catch (Exception e) {
-                // 处理其他JWT验证异常
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Invalid JWT Token");
-                return false;
-            }
+        if (token == null || !token.startsWith("Bearer ")) {
+            handleError(response, "Authorization token not found");
+            return false;
         }
-        // 如果没有token或token格式不正确，则也可能需要返回401或其他错误码
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write("Authorization token not found");
+
+        token = token.substring(7);
+
+        try {
+            jwtUtil.validateJwtToken(token);
+            return true;
+        } catch (JwtUtil.JwtTokenExpiredException e) {
+            handleError(response, "Token has expired");
+        } catch (Exception e) {
+            handleError(response, "Invalid JWT Token");
+        }
+
         return false;
+    }
+
+    private void handleError(HttpServletResponse response, String errorMessage) throws Exception {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        // 这里可以根据需要设置响应内容类型和内容
+        response.setContentType("application/json");
+        response.getWriter().write("{\"error\": \"" + errorMessage + "\"}");
     }
 }
