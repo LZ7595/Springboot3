@@ -15,7 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtAuthenticationInterceptor)
-                .addPathPatterns("/rcdh/**") // 指定需要拦截的路径模式，例如所有路径
+                .addPathPatterns("/rcdh/1") // 指定需要拦截的路径模式，例如所有路径
                 .excludePathPatterns("/login", "/register", "/error"); // 排除不需要拦截的路径
     }
 }
