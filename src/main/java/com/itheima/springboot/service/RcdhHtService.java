@@ -9,7 +9,7 @@ public interface RcdhHtService {
 
     PageBean findRcdhHtByPage(int pageNum, int pageSize);
     List<Rcdh> findByIdRcHt(int id);
-
+    PageBean findByMoreRcHtByPage(int pageNum, int pageSize, String name, String word);
     int insertRcdh(Rcdh rcdh);
     int deleteRcdhById(int id);
     int updateRcdhById(Rcdh rcdh);

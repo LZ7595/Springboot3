@@ -22,9 +22,9 @@ public class RcdhHtServiceImpl implements RcdhHtService {
     public PageBean findRcdhHtByPage(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
 
-        List<Rcdh> allRcdhQtList = rcdhHtMapper.findAllRcHt();
+        List<Rcdh> allRcdhHtList = rcdhHtMapper.findAllRcHt();
 
-        Page p = (Page) allRcdhQtList;
+        Page p = (Page) allRcdhHtList;
         long total = p.getTotal();
         List rcdhList =  p.getResult();
         int pageI = p.getPageNum();
@@ -43,6 +43,28 @@ public class RcdhHtServiceImpl implements RcdhHtService {
 
     public List<Rcdh> findByIdRcHt(int id){
         return rcdhHtMapper.findByIdRcHt(id);
+    }
+
+    public PageBean findByMoreRcHtByPage(int pageNum, int pageSize, String name, String word) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Rcdh> rcdhList;
+        if (name == null && word == null) {
+            rcdhList = rcdhHtMapper.findAllRcHt();
+        } else {
+            rcdhList = rcdhHtMapper.findByMoreRcHt(name, word);
+        }
+        Page p = (Page) rcdhList;
+        long total = p.getTotal();
+        int pageI = p.getPageNum();
+        int pageS = p.getPages();
+        int size = p.getPageSize();
+        PageBean pageBean = new PageBean();
+        pageBean.setTotal(total);
+        pageBean.setRows(rcdhList);
+        pageBean.setPageNum(pageI);
+        pageBean.setPages(pageS);
+        pageBean.setPageSize(size);
+        return pageBean;
     }
 
     @Override

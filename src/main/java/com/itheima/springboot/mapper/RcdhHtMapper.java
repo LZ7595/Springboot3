@@ -19,7 +19,10 @@ public interface RcdhHtMapper {
     @Select("select * from rc where id = #{id}")
     List<Rcdh> findByIdRcHt(int id);
 
-    @Insert("INSERT INTO rc (name, word, num, img, url, status) VALUES (#{name}, #{word}, #{num}, #{img}, #{url}, #{status})")
+    @Select("SELECT * FROM rc WHERE (COALESCE(#{name}, '') = '' OR name LIKE CONCAT('%', #{name}, '%')) AND (COALESCE(#{word}, '') = '' OR word LIKE CONCAT('%', #{word}, '%'))")
+    List<Rcdh> findByMoreRcHt(@Param("name") String name, @Param("word") String word);
+
+    @Insert("INSERT INTO rc (name, word, num, img, url) VALUES (#{name}, #{word}, #{num}, #{img}, #{url})")
     int insertRcdh(Rcdh rcdh);
 
     @Delete("DELETE FROM rc WHERE id = #{id}")
