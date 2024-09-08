@@ -2,27 +2,27 @@ package com.itheima.springboot.service.imp;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.itheima.springboot.mapper.RcdhHtMapper;
+import com.itheima.springboot.mapper.JcgyHtMapper;
 import com.itheima.springboot.pojo.PageBean;
-import com.itheima.springboot.pojo.Rcdh;
-import com.itheima.springboot.service.RcdhHtService;
+import com.itheima.springboot.pojo.Jcgy;
+import com.itheima.springboot.service.JcgyHtService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class RcdhHtServiceImpl implements RcdhHtService {
+public class JcgyHtServiceImpl implements JcgyHtService {
     
     @Resource
-    private RcdhHtMapper rcdhHtMapper;
+    private JcgyHtMapper jcgyHtMapper;
 
     //分页查询
     @Override
-    public PageBean findRcdhHtByPage(int pageNum, int pageSize) {
+    public PageBean findJcgyHtByPage(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
 
-        List<Rcdh> allRcdhHtList = rcdhHtMapper.findAllRcHt();
+        List<Jcgy> allRcdhHtList = jcgyHtMapper.findAllJcHt();
 
         Page p = (Page) allRcdhHtList;
         long total = p.getTotal();
@@ -41,26 +41,26 @@ public class RcdhHtServiceImpl implements RcdhHtService {
         return pageBean;
     }
 
-    public List<Rcdh> findByIdRcHt(int id){
-        return rcdhHtMapper.findByIdRcHt(id);
+    public List<Jcgy> findByIdJcHt(int id){
+        return jcgyHtMapper.findByIdJcHt(id);
     }
 
-    public PageBean findByMoreRcHtByPage(int pageNum, int pageSize, String name, String word) {
+    public PageBean findByMoreJcHtByPage(int pageNum, int pageSize, String name, String word) {
         PageHelper.startPage(pageNum, pageSize);
-        List<Rcdh> rcdhList;
+        List<Jcgy> jcgyList;
         if (name == null && word == null) {
-            rcdhList = rcdhHtMapper.findAllRcHt();
+            jcgyList = jcgyHtMapper.findAllJcHt();
         } else {
-            rcdhList = rcdhHtMapper.findByMoreRcHt(name, word);
+            jcgyList = jcgyHtMapper.findByMoreJcHt(name, word);
         }
-        Page p = (Page) rcdhList;
+        Page p = (Page) jcgyList;
         long total = p.getTotal();
         int pageI = p.getPageNum();
         int pageS = p.getPages();
         int size = p.getPageSize();
         PageBean pageBean = new PageBean();
         pageBean.setTotal(total);
-        pageBean.setRows(rcdhList);
+        pageBean.setRows(jcgyList);
         pageBean.setPageNum(pageI);
         pageBean.setPages(pageS);
         pageBean.setPageSize(size);
@@ -68,25 +68,21 @@ public class RcdhHtServiceImpl implements RcdhHtService {
     }
 
     @Override
-    public int insertRcdh(Rcdh rcdh) {
-        return rcdhHtMapper.insertRcdh(rcdh);
+    public int insertJcgy(Jcgy jcgy) {return jcgyHtMapper.insertJcgy(jcgy);}
+
+    @Override
+    public int deleteJcgyById(int id) {
+        return jcgyHtMapper.deleteJcgyById(id);
     }
 
     @Override
-    public int deleteRcdhById(int id) {
-        return rcdhHtMapper.deleteRcdhById(id);
+    public int updateJcgyById(Jcgy jcgy) {
+        return jcgyHtMapper.updateJcgyById(jcgy);
     }
 
     @Override
-    public int updateRcdhById(Rcdh rcdh) {
-        return rcdhHtMapper.updateRcdhById(rcdh);
-    }
+    public int updateStatusById(int id, byte status) {return jcgyHtMapper.updateStatusById(id, status);}
 
     @Override
-    public int updateStatusById(int id, byte status) {return rcdhHtMapper.updateStatusById(id, status);}
-
-    @Override
-    public Rcdh findByIdRcHt2(int id){
-        return rcdhHtMapper.findByIdRcHt2(id);
-    }
+    public Jcgy findByIdJcHt2(int id){return jcgyHtMapper.findByIdJcHt2(id);}
 }

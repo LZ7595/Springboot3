@@ -30,4 +30,9 @@ public interface RcdhHtMapper {
 
     @Update("UPDATE rc SET name = #{name}, word = #{word}, num = #{num}, img = #{img}, url = #{url}, status = #{status} WHERE id = #{id}")
     int updateRcdhById(Rcdh rcdh);
+
+    @Update("UPDATE rc SET status = #{status} WHERE id = #{id}")
+    int updateStatusById( int id,  int status);
+    @Select("select * from rc where id = #{id}")
+    Rcdh findByIdRcHt2(int id);
 }

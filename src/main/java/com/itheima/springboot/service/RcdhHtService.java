@@ -13,4 +13,6 @@ public interface RcdhHtService {
     int insertRcdh(Rcdh rcdh);
     int deleteRcdhById(int id);
     int updateRcdhById(Rcdh rcdh);
+    int updateStatusById(int id, byte status);
+    Rcdh findByIdRcHt2(int id);
 }

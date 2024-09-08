@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -16,7 +17,7 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = request.getHeader("Authorization");
-        if (token == null || !token.startsWith("Bearer ")) {
+        if (token == null ||!token.startsWith("Bearer ")) {
             handleError(response, "Authorization token not found");
             return false;
         }
@@ -27,24 +28,24 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
             jwtUtil.validateJwtToken(token);
             Claims claims = jwtUtil.parseJWT(token);
             String username = claims.get("username", String.class);
-            // 这里只是打印出用户名，实际项目中可能将用户名设置到请求属性中，供后续处理器使用
-            System.out.println("Authenticated User: " + username);
-            // 注意：这里不会进行数据库验证，因为这不是拦截器的职责
+            request.setAttribute("username", username);
             return true;
         } catch (JwtUtil.JwtTokenExpiredException e) {
-            handleError(response, "Token has expired");
+            // Token 过期时的处理
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType("application/json");
+            response.getWriter().write("{\"message\":\"Token has expired. Please log in again.\"}");
+            return false;
         } catch (Exception e) {
             handleError(response, "Invalid JWT Token");
+            return false;
         }
-
-        return false;
     }
 
 
     private void handleError(HttpServletResponse response, String errorMessage) throws Exception {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        // 这里可以根据需要设置响应内容类型和内容
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json");
-        response.getWriter().write("{\"error\": \"" + errorMessage + "\"}");
+        response.getWriter().write("{\"message\":\"" + errorMessage + "\"}");
     }
 }
